@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Healthedra — agents, engine and clinical workflow</title>
+<meta name="description" content="Healthedra builds for healthcare from three sides: AI agents that run operations, an engine that turns configuration into clinical software, and the service that puts both to work in the clinical workflow.">
+<link rel="icon" href="assets/healthedra-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --ink: #0A2420;
+  --ink-2: #3F5B55;
+  --ink-3: #7A918C;
+  --paper: #F4F8F6;
+  --white: #FFFFFF;
+  --line: #D9E5E1;
+  --green: #218D76;
+  --green-mid: #76CBB8;
+  --green-pale: #B4DACE;
+  --green-wash: #E6F3EF;
+  --night: #071B18;
+  --night-2: #0D2A25;
+  --night-line: #1C3F38;
+  --night-text: #CFE3DD;
+  --night-mute: #7FA39A;
+  --display: 'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --gutter: clamp(16px, 4vw, 48px);
+  --max: 1240px;
+}
+* { box-sizing: border-box }
+html { scroll-behavior: smooth; scroll-padding-top: 72px }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--display); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden }
+a { color: inherit }
+img, svg { display: block; max-width: 100% }
+h1, h2, h3, p { margin: 0 }
+.wrap { max-width: var(--max); margin: 0 auto; padding-inline: var(--gutter) }
+.mono { font-family: var(--display); font-size: 14px; font-weight: 500; letter-spacing: 0 }
+
+/* nav */
+.nav { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--paper) 86%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid transparent; transition: border-color .3s }
+.nav.scrolled { border-bottom-color: var(--line) }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 24px }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 600; font-size: 20px; letter-spacing: -.03em }
+.brand img { width: 34px; height: 34px }
+.nav nav { display: flex; align-items: center; gap: clamp(14px, 2.4vw, 32px) }
+.nav nav a { text-decoration: none; font-size: 15px; color: var(--ink-2); transition: color .2s }
+.nav nav a:hover { color: var(--green) }
+.nav nav a.cta { color: var(--white); background: var(--ink); padding: 8px 16px; border-radius: 999px }
+.nav nav a.cta:hover { background: var(--green); color: var(--white) }
+@media (max-width: 720px) { .nav nav a:not(.cta) { display: none } }
+
+/* hero */
+.hero { position: relative; padding-block: clamp(48px, 9vw, 120px) clamp(40px, 6vw, 80px) }
+.hero .wrap.top { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(24px, 5vw, 80px); align-items: center }
+.eyebrow { font-weight: 500; font-size: 16px; margin-bottom: 24px }
+h1 { font-weight: 500; font-size: clamp(42px, 7.2vw, 96px); line-height: .98; letter-spacing: -.045em; text-wrap: balance }
+h1 em { font-style: normal; color: var(--green) }
+.lede { margin-top: 28px; max-width: 54ch; font-size: clamp(17px, 1.6vw, 20px); color: var(--ink-2) }
+.hero-actions { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 12px }
+.btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 500; font-size: 16px; padding: 13px 22px; border-radius: 999px; border: 1px solid var(--ink); transition: background .2s, color .2s, border-color .2s }
+.btn.solid { background: var(--ink); color: var(--white) }
+.btn.solid:hover { background: var(--green); border-color: var(--green) }
+.btn.ghost:hover { border-color: var(--green); color: var(--green) }
+.btn .arr { transition: transform .2s }
+.btn:hover .arr { transform: translateX(3px) }
+.mark-stage { position: relative; aspect-ratio: 1; width: min(100%, 520px); justify-self: end }
+.mark-stage svg { width: 100%; height: 100%; overflow: visible }
+.mark-stage circle { transform-box: fill-box; transform-origin: center; animation: pop .9s cubic-bezier(.2,.9,.3,1.3) both, breathe 6s ease-in-out infinite; animation-delay: calc(var(--d) * 14ms), calc(900ms + var(--d) * 45ms) }
+@keyframes pop { from { transform: scale(0); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+@keyframes breathe { 0%, 100% { scale: 1 } 50% { scale: 1.28 } }
+.facts { margin-top: clamp(48px, 7vw, 96px); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) }
+.fact { padding: 22px 24px 0 0; display: flex; gap: 16px; align-items: baseline; text-decoration: none }
+.fact + .fact { padding-left: 24px; border-left: 1px solid var(--line) }
+.fact .n { font-size: 14px; font-weight: 500; color: var(--green); font-variant-numeric: tabular-nums }
+.fact strong { display: block; font-weight: 600; font-size: 20px; letter-spacing: -.02em; transition: color .2s }
+.fact span.t { display: block; font-size: 15px; color: var(--ink-2); line-height: 1.45; margin-top: 2px }
+.fact:hover strong { color: var(--green) }
+@media (max-width: 860px) {
+  .hero .wrap.top { grid-template-columns: minmax(0, 1fr) }
+  .mark-stage { order: -1; width: min(62vw, 300px); justify-self: start; margin-bottom: 8px }
+  .facts { grid-template-columns: minmax(0, 1fr) }
+  .fact, .fact + .fact { padding: 18px 0; border-left: 0; border-bottom: 1px solid var(--line) }
+}
+
+/* sections */
+section.block { padding-block: clamp(64px, 10vw, 140px); border-top: 1px solid var(--line) }
+.head { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: clamp(16px, 4vw, 64px); margin-bottom: clamp(36px, 5vw, 72px) }
+.head .idx { font-weight: 600; font-size: 16px; line-height: 1.3 }
+.head .idx b { display: block; font-weight: 400; font-size: clamp(44px, 5vw, 72px); line-height: .9; letter-spacing: -.05em; color: var(--green); margin-bottom: 12px; font-variant-numeric: tabular-nums }
+h2 { font-weight: 500; font-size: clamp(32px, 4.6vw, 60px); line-height: 1.04; letter-spacing: -.035em; max-width: 18ch; text-wrap: balance }
+.head p { margin-top: 22px; max-width: 60ch; color: var(--ink-2); font-size: clamp(17px, 1.4vw, 19px) }
+@media (max-width: 860px) { .head { grid-template-columns: minmax(0, 1fr) } }
+
+/* agents */
+.tree { position: relative }
+.root { width: fit-content; margin: 0 auto; background: var(--ink); color: var(--white); border-radius: 999px; padding: 12px 22px; display: flex; align-items: center; gap: 12px; font-weight: 500 }
+.root i { width: 8px; height: 8px; border-radius: 50%; background: var(--green-mid); box-shadow: 0 0 0 5px rgba(118,203,184,.22) }
+.stem { width: 1px; height: 36px; margin: 0 auto; background-image: linear-gradient(var(--green) 40%, transparent 0); background-size: 1px 6px }
+.leaves { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; position: relative; padding-top: 28px }
+.leaves::before { content: ""; position: absolute; top: 0; left: 12.5%; right: 12.5%; height: 1px; background-image: linear-gradient(90deg, var(--green) 40%, transparent 0); background-size: 6px 1px }
+.leaf { position: relative; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 18px; transition: border-color .25s, transform .25s }
+.leaf::before { content: ""; position: absolute; top: -28px; left: 50%; width: 1px; height: 28px; background-image: linear-gradient(var(--green) 40%, transparent 0); background-size: 1px 6px }
+.leaf:hover { border-color: var(--green); transform: translateY(-3px) }
+.leaf strong { display: block; font-weight: 600; font-size: 17px; letter-spacing: -.01em; line-height: 1.25 }
+.leaf .where { color: var(--ink-3); margin-top: 4px; display: block; font-size: 13px; font-weight: 400 }
+.leaf ul { list-style: none; margin: 14px 0 0; padding: 12px 0 0; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink-2); display: grid; gap: 4px }
+.leaf li { display: flex; align-items: baseline; gap: 8px } .leaf li::before { content: ""; flex: none; width: 5px; height: 5px; border-radius: 50%; background: var(--green-mid); transform: translateY(-2px) }
+@media (max-width: 980px) {
+  .root { margin-left: 0 } .stem { margin-left: 22px }
+  .leaves { grid-template-columns: minmax(0, 1fr); padding: 0 0 0 44px; gap: 10px }
+  .leaves::before { top: 0; bottom: 34px; left: 22px; right: auto; width: 1px; height: auto; background-image: linear-gradient(var(--green) 40%, transparent 0); background-size: 1px 6px }
+  .leaf::before { top: 30px; left: -22px; width: 22px; height: 1px; background-image: linear-gradient(90deg, var(--green) 40%, transparent 0); background-size: 6px 1px }
+}
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); margin-top: clamp(36px, 5vw, 64px) }
+@media (max-width: 860px) { .two { grid-template-columns: minmax(0, 1fr) } }
+.term { background: var(--night); color: var(--night-text); border-radius: 16px; padding: 22px 24px; font-family: var(--mono); font-size: 14px; line-height: 1.9; overflow-x: auto; align-self: start }
+.term .bar { display: flex; gap: 6px; margin-bottom: 14px } .term .bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--night-line) }
+.term .p { color: var(--green-mid) } .term .c { color: var(--night-mute) }
+.term div { white-space: nowrap }
+.rules { display: grid; gap: 0; align-content: start }
+.rule { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 14px; padding: 16px 0; border-top: 1px solid var(--line) }
+.rule:last-child { border-bottom: 1px solid var(--line) }
+.rule .k { font-size: 15px; font-weight: 600; color: var(--green); padding-top: 1px }
+.rule strong { font-weight: 600 } .rule p { color: var(--ink-2); font-size: 16px }
+
+/* engine (dark) */
+section.dark { background: var(--night); color: var(--night-text); border-top: 0 }
+.dark h2 { color: var(--white) } .dark .head p { color: var(--night-mute) } .dark .idx { color: var(--white) } .dark .idx b { color: var(--green-mid) }
+.demo { border: 1px solid var(--night-line); border-radius: 18px; overflow: hidden; background: var(--night-2) }
+.tabs { display: flex; gap: 8px; padding: 14px; border-bottom: 1px solid var(--night-line); overflow-x: auto; align-items: center }
+.tabs .lbl { color: var(--night-mute); margin-right: 8px; flex: none }
+.tab { flex: none; font: 500 14px var(--display); color: var(--night-text); background: transparent; border: 1px solid var(--night-line); border-radius: 999px; padding: 8px 16px; cursor: pointer; transition: background .2s, color .2s, border-color .2s }
+.tab:hover { border-color: var(--green-mid) }
+.tab[aria-selected="true"] { background: var(--green-mid); border-color: var(--green-mid); color: var(--night) }
+.tab:focus-visible, .btn:focus-visible, a:focus-visible { outline: 2px solid var(--green-mid); outline-offset: 3px }
+.panes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) }
+.pane { padding: clamp(18px, 2.5vw, 30px); min-width: 0 }
+.pane + .pane { border-left: 1px solid var(--night-line); background: var(--paper); color: var(--ink) }
+.pane .cap { color: var(--night-mute); margin-bottom: 16px; display: flex; justify-content: space-between; gap: 12px }
+.pane + .pane .cap { color: var(--ink-3) }
+pre { margin: 0; font-family: var(--mono); font-size: 13.5px; line-height: 1.75; overflow-x: auto; color: var(--night-text) }
+pre .k { color: var(--green-mid) } pre .s { color: #E9D8A6 } pre .x { color: var(--night-mute) }
+.form { display: grid; gap: 14px; animation: fade .4s both }
+@keyframes fade { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+.form h3 { font-weight: 600; font-size: 20px; letter-spacing: -.02em }
+.fld { display: grid; gap: 5px } .fld label { font-size: 13px; font-weight: 500; color: var(--ink-2) }
+.fld input:not([type=range]):not([type=checkbox]), .fld select { font: 400 15px var(--display); color: var(--ink); background: var(--white); border: 1px solid var(--line); border-radius: 9px; padding: 9px 12px; width: 100%; min-width: 0 }
+.fld input:focus, .fld select:focus { outline: 2px solid var(--green); outline-offset: 1px; border-color: var(--green) }
+.fld input[type=range] { width: 100%; accent-color: var(--green) }
+.fld.chk { grid-template-columns: 18px minmax(0, 1fr); align-items: start; gap: 10px } .fld.chk input { accent-color: var(--green); margin-top: 3px; width: 16px; height: 16px }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; padding-top: 14px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 12px; color: var(--ink-2) }
+.flow b { font-weight: 500; background: var(--green-wash); color: var(--green); border-radius: 999px; padding: 4px 10px }
+.note { margin-top: 14px; color: var(--night-mute); font-size: 14px }
+@media (max-width: 860px) { .panes { grid-template-columns: minmax(0, 1fr) } .pane + .pane { border-left: 0; border-top: 1px solid var(--night-line) } }
+.concepts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: clamp(36px, 5vw, 64px); border-top: 1px solid var(--night-line) }
+.concept { padding: 22px 18px 0 0 } .concept + .concept { padding-left: 18px; border-left: 1px solid var(--night-line) }
+.concept strong { display: block; color: var(--white); font-weight: 600; font-size: 17px; margin: 0 0 6px }
+.concept p { font-size: 14.5px; color: var(--night-mute); line-height: 1.5 }
+.concept .mono { color: var(--green-mid) }
+@media (max-width: 980px) { .concepts { grid-template-columns: minmax(0, 1fr) } .concept, .concept + .concept { padding: 16px 0; border-left: 0; border-bottom: 1px solid var(--night-line) } }
+
+/* medicine */
+.med { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--ink) }
+.med article { padding: 28px 28px 8px 0 } .med article + article { padding-left: 28px; border-left: 1px solid var(--line) }
+.med h3 { font-weight: 600; font-size: 24px; letter-spacing: -.025em; margin: 14px 0 10px }
+.med p { color: var(--ink-2); font-size: 16px }
+.med .mono { color: var(--green) }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px }
+.tags span { font-size: 13px; border: 1px solid var(--line); background: var(--white); border-radius: 999px; padding: 4px 11px; color: var(--ink-2) }
+@media (max-width: 860px) { .med { grid-template-columns: minmax(0, 1fr) } .med article, .med article + article { padding: 24px 0; border-left: 0; border-bottom: 1px solid var(--line) } }
+
+/* work */
+.work { border-top: 1px solid var(--ink) }
+.row { display: grid; grid-template-columns: 56px minmax(0, 1.1fr) minmax(0, 1.6fr) minmax(0, .9fr); gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--line); align-items: baseline; transition: background .25s, padding .25s }
+.row:hover { background: var(--white); padding-inline: 14px }
+.row .n { font-size: 14px; color: var(--ink-3); font-variant-numeric: tabular-nums }
+.row h3 { font-weight: 500; font-size: clamp(22px, 2.4vw, 30px); letter-spacing: -.03em; line-height: 1.1 }
+.row p { color: var(--ink-2); font-size: 16px }
+.row .side { font-size: 14px; font-weight: 500; color: var(--green); text-align: right }
+@media (max-width: 860px) { .row { grid-template-columns: minmax(0, 1fr); gap: 6px } .row .n { display: none } .row .side { text-align: left; margin-top: 4px } .row:hover { padding-inline: 0; background: none } }
+
+/* contact */
+.contact { background: var(--ink); color: var(--white); padding-block: clamp(72px, 11vw, 150px) 40px; position: relative; overflow: hidden }
+.contact h2 { max-width: 16ch; font-size: clamp(38px, 6.4vw, 88px) }
+.contact h2 em { font-style: normal; color: var(--green-mid) }
+.mail { display: inline-block; margin-top: 36px; font-size: clamp(20px, 3vw, 34px); letter-spacing: -.02em; text-decoration: none; border-bottom: 1px solid var(--green-mid); padding-bottom: 4px; transition: color .2s }
+.mail:hover { color: var(--green-mid) }
+.foot { margin-top: clamp(64px, 9vw, 120px); padding-top: 22px; border-top: 1px solid var(--night-line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; color: var(--night-mute); font-size: 14px }
+.foot a { text-decoration: none } .foot a:hover { color: var(--white) }
+.contact .ghostmark { position: absolute; right: -8%; bottom: -30%; width: min(70vw, 720px); opacity: .09; pointer-events: none }
+
+/* reveal */
+.rv { opacity: 0; transform: translateY(18px); transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1) }
+.rv.in { opacity: 1; transform: none }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto }
+  .rv { opacity: 1; transform: none; transition: none }
+  .mark-stage circle, .form { animation: none }
+}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="assets/healthedra-mark.svg" alt="">healthedra</a>
+    <nav>
+      <a href="#agents">Agents</a>
+      <a href="#engine">Engine</a>
+      <a href="#workflow">Clinical workflow</a>
+      <a class="cta" href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap top">
+    <div>
+      <h1>Healthcare has many sides. We build on <em>three of them.</em></h1>
+      <p class="lede">Healthedra brings together AI agents that run the daily operations of medical brands, an engine that turns configuration into clinical software, and the service that puts both to work inside the clinical workflow.</p>
+      <div class="hero-actions">
+        <a class="btn solid" href="#workflow">See the work <span class="arr">→</span></a>
+        <a class="btn ghost" href="#contact">Talk to us</a>
+      </div>
+    </div>
+    <div class="mark-stage" id="mark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="d2 tip"><circle cx="56.25" cy="3.52" r="2.42" fill="#39A38C"/><circle cx="63.75" cy="3.52" r="2.11" fill="#C1E1D7"/><circle cx="48.75" cy="3.52" r="1.59" fill="#CAE5DD"/><circle cx="71.25" cy="3.52" r="1.83" fill="#51B7A1"/><circle cx="41.25" cy="3.52" r="1.39" fill="#6BC5B1"/><circle cx="78.75" cy="3.52" r="1.21" fill="#D3EAE2"/><circle cx="33.75" cy="3.52" r="0.91" fill="#DCEEE8"/><circle cx="86.25" cy="3.52" r="1.05" fill="#82D0BE"/><circle cx="26.25" cy="3.52" r="0.79" fill="#96D8C8"/><circle cx="93.75" cy="3.52" r="0.69" fill="#E5F3EE"/><circle cx="56.25" cy="12.13" r="2.26" fill="#BFE0D5"/><circle cx="63.75" cy="12.13" r="2.60" fill="#339E87"/><circle cx="48.75" cy="12.13" r="1.97" fill="#4AB49D"/><circle cx="71.25" cy="12.13" r="1.71" fill="#C8E4DB"/><circle cx="41.25" cy="12.13" r="1.29" fill="#D1E9E1"/><circle cx="78.75" cy="12.13" r="1.49" fill="#65C2AD"/><circle cx="33.75" cy="12.13" r="1.13" fill="#7DCEBC"/><circle cx="86.25" cy="12.13" r="0.98" fill="#DAEDE7"/><circle cx="26.25" cy="12.13" r="0.74" fill="#E2F2ED"/><circle cx="93.75" cy="12.13" r="0.85" fill="#91D6C6"/><circle cx="56.25" cy="20.74" r="2.78" fill="#2D9881"/><circle cx="63.75" cy="20.74" r="2.42" fill="#BDDED4"/><circle cx="48.75" cy="20.74" r="1.83" fill="#C6E3DA"/><circle cx="71.25" cy="20.74" r="2.11" fill="#44AF98"/><circle cx="41.25" cy="20.74" r="1.59" fill="#5EBEA9"/><circle cx="78.75" cy="20.74" r="1.39" fill="#CEE8E0"/><circle cx="33.75" cy="20.74" r="1.05" fill="#D7ECE5"/><circle cx="86.25" cy="20.74" r="1.21" fill="#78CCB9"/><circle cx="26.25" cy="20.74" r="0.91" fill="#8CD4C3"/><circle cx="93.75" cy="20.74" r="0.79" fill="#E0F0EB"/><circle cx="56.25" cy="29.36" r="2.60" fill="#BBDDD2"/><circle cx="63.75" cy="29.36" r="2.98" fill="#27937C"/><circle cx="48.75" cy="29.36" r="2.26" fill="#3EA992"/><circle cx="71.25" cy="29.36" r="1.97" fill="#C3E2D8"/><circle cx="41.25" cy="29.36" r="1.49" fill="#CCE6DE"/><circle cx="78.75" cy="29.36" r="1.71" fill="#58BBA5"/><circle cx="56.25" cy="37.97" r="3.20" fill="#218D76"/><circle cx="63.75" cy="37.97" r="2.78" fill="#B8DCD1"/><circle cx="48.75" cy="37.97" r="2.11" fill="#C1E1D7"/><circle cx="71.25" cy="37.97" r="2.42" fill="#39A38C"/><circle cx="30.00" cy="7.82" r="0.36" fill="#CEEEE6"/><circle cx="37.50" cy="7.82" r="0.47" fill="#BBE7DC"/><circle cx="45.00" cy="7.82" r="0.62" fill="#A8DFD1"/><circle cx="52.50" cy="7.82" r="0.82" fill="#94D7C7"/><circle cx="60.00" cy="7.82" r="1.09" fill="#80CFBD"/><circle cx="67.50" cy="7.82" r="0.82" fill="#94D7C7"/><circle cx="75.00" cy="7.82" r="0.62" fill="#A8DFD1"/><circle cx="82.50" cy="7.82" r="0.47" fill="#BBE7DC"/><circle cx="90.00" cy="7.82" r="0.36" fill="#CEEEE6"/><circle cx="30.00" cy="16.44" r="0.38" fill="#CAECE3"/><circle cx="37.50" cy="16.44" r="0.51" fill="#B6E5D9"/><circle cx="45.00" cy="16.44" r="0.67" fill="#A2DDCF"/><circle cx="52.50" cy="16.44" r="0.88" fill="#8ED5C4"/><circle cx="60.00" cy="16.44" r="1.17" fill="#7ACDBA"/><circle cx="67.50" cy="16.44" r="0.88" fill="#8ED5C4"/><circle cx="75.00" cy="16.44" r="0.67" fill="#A2DDCF"/><circle cx="82.50" cy="16.44" r="0.51" fill="#B6E5D9"/><circle cx="90.00" cy="16.44" r="0.38" fill="#CAECE3"/><circle cx="30.00" cy="25.05" r="0.41" fill="#C5EAE1"/><circle cx="37.50" cy="25.05" r="0.54" fill="#B2E3D6"/><circle cx="45.00" cy="25.05" r="0.72" fill="#9EDBCC"/><circle cx="52.50" cy="25.05" r="0.95" fill="#8AD3C2"/><circle cx="60.00" cy="25.05" r="1.25" fill="#75CBB8"/><circle cx="67.50" cy="25.05" r="0.95" fill="#8AD3C2"/><circle cx="75.00" cy="25.05" r="0.72" fill="#9EDBCC"/><circle cx="82.50" cy="25.05" r="0.54" fill="#B2E3D6"/><circle cx="90.00" cy="25.05" r="0.41" fill="#C5EAE1"/><circle cx="45.00" cy="33.66" r="0.77" fill="#98D9C9"/><circle cx="52.50" cy="33.66" r="1.01" fill="#84D1BF"/><circle cx="60.00" cy="33.66" r="1.34" fill="#6FC7B3"/><circle cx="67.50" cy="33.66" r="1.01" fill="#84D1BF"/><circle cx="75.00" cy="33.66" r="0.77" fill="#98D9C9"/><circle cx="52.50" cy="42.28" r="1.09" fill="#80CFBD"/><circle cx="60.00" cy="42.28" r="1.44" fill="#68C4AF"/><circle cx="67.50" cy="42.28" r="1.09" fill="#80CFBD"/><circle cx="116.48" cy="56.25" r="2.42" fill="#39A38C"/><circle cx="116.48" cy="63.75" r="2.11" fill="#C1E1D7"/><circle cx="116.48" cy="48.75" r="1.59" fill="#CAE5DD"/><circle cx="116.48" cy="71.25" r="1.83" fill="#51B7A1"/><circle cx="116.48" cy="41.25" r="1.39" fill="#6BC5B1"/><circle cx="116.48" cy="78.75" r="1.21" fill="#D3EAE2"/><circle cx="116.48" cy="33.75" r="0.91" fill="#DCEEE8"/><circle cx="116.48" cy="86.25" r="1.05" fill="#82D0BE"/><circle cx="116.48" cy="26.25" r="0.79" fill="#96D8C8"/><circle cx="116.48" cy="93.75" r="0.69" fill="#E5F3EE"/><circle cx="107.87" cy="56.25" r="2.26" fill="#BFE0D5"/><circle cx="107.87" cy="63.75" r="2.60" fill="#339E87"/><circle cx="107.87" cy="48.75" r="1.97" fill="#4AB49D"/><circle cx="107.87" cy="71.25" r="1.71" fill="#C8E4DB"/><circle cx="107.87" cy="41.25" r="1.29" fill="#D1E9E1"/><circle cx="107.87" cy="78.75" r="1.49" fill="#65C2AD"/><circle cx="107.87" cy="33.75" r="1.13" fill="#7DCEBC"/><circle cx="107.87" cy="86.25" r="0.98" fill="#DAEDE7"/><circle cx="107.87" cy="26.25" r="0.74" fill="#E2F2ED"/><circle cx="107.87" cy="93.75" r="0.85" fill="#91D6C6"/><circle cx="99.26" cy="56.25" r="2.78" fill="#2D9881"/><circle cx="99.26" cy="63.75" r="2.42" fill="#BDDED4"/><circle cx="99.26" cy="48.75" r="1.83" fill="#C6E3DA"/><circle cx="99.26" cy="71.25" r="2.11" fill="#44AF98"/><circle cx="99.26" cy="41.25" r="1.59" fill="#5EBEA9"/><circle cx="99.26" cy="78.75" r="1.39" fill="#CEE8E0"/><circle cx="99.26" cy="33.75" r="1.05" fill="#D7ECE5"/><circle cx="99.26" cy="86.25" r="1.21" fill="#78CCB9"/><circle cx="99.26" cy="26.25" r="0.91" fill="#8CD4C3"/><circle cx="99.26" cy="93.75" r="0.79" fill="#E0F0EB"/><circle cx="90.64" cy="56.25" r="2.60" fill="#BBDDD2"/><circle cx="90.64" cy="63.75" r="2.98" fill="#27937C"/><circle cx="90.64" cy="48.75" r="2.26" fill="#3EA992"/><circle cx="90.64" cy="71.25" r="1.97" fill="#C3E2D8"/><circle cx="90.64" cy="41.25" r="1.49" fill="#CCE6DE"/><circle cx="90.64" cy="78.75" r="1.71" fill="#58BBA5"/><circle cx="82.03" cy="56.25" r="3.20" fill="#218D76"/><circle cx="82.03" cy="63.75" r="2.78" fill="#B8DCD1"/><circle cx="82.03" cy="48.75" r="2.11" fill="#C1E1D7"/><circle cx="82.03" cy="71.25" r="2.42" fill="#39A38C"/><circle cx="112.18" cy="30.00" r="0.36" fill="#CEEEE6"/><circle cx="112.18" cy="37.50" r="0.47" fill="#BBE7DC"/><circle cx="112.18" cy="45.00" r="0.62" fill="#A8DFD1"/><circle cx="112.18" cy="52.50" r="0.82" fill="#94D7C7"/><circle cx="112.18" cy="60.00" r="1.09" fill="#80CFBD"/><circle cx="112.18" cy="67.50" r="0.82" fill="#94D7C7"/><circle cx="112.18" cy="75.00" r="0.62" fill="#A8DFD1"/><circle cx="112.18" cy="82.50" r="0.47" fill="#BBE7DC"/><circle cx="112.18" cy="90.00" r="0.36" fill="#CEEEE6"/><circle cx="103.56" cy="30.00" r="0.38" fill="#CAECE3"/><circle cx="103.56" cy="37.50" r="0.51" fill="#B6E5D9"/><circle cx="103.56" cy="45.00" r="0.67" fill="#A2DDCF"/><circle cx="103.56" cy="52.50" r="0.88" fill="#8ED5C4"/><circle cx="103.56" cy="60.00" r="1.17" fill="#7ACDBA"/><circle cx="103.56" cy="67.50" r="0.88" fill="#8ED5C4"/><circle cx="103.56" cy="75.00" r="0.67" fill="#A2DDCF"/><circle cx="103.56" cy="82.50" r="0.51" fill="#B6E5D9"/><circle cx="103.56" cy="90.00" r="0.38" fill="#CAECE3"/><circle cx="94.95" cy="30.00" r="0.41" fill="#C5EAE1"/><circle cx="94.95" cy="37.50" r="0.54" fill="#B2E3D6"/><circle cx="94.95" cy="45.00" r="0.72" fill="#9EDBCC"/><circle cx="94.95" cy="52.50" r="0.95" fill="#8AD3C2"/><circle cx="94.95" cy="60.00" r="1.25" fill="#75CBB8"/><circle cx="94.95" cy="67.50" r="0.95" fill="#8AD3C2"/><circle cx="94.95" cy="75.00" r="0.72" fill="#9EDBCC"/><circle cx="94.95" cy="82.50" r="0.54" fill="#B2E3D6"/><circle cx="94.95" cy="90.00" r="0.41" fill="#C5EAE1"/><circle cx="86.34" cy="45.00" r="0.77" fill="#98D9C9"/><circle cx="86.34" cy="52.50" r="1.01" fill="#84D1BF"/><circle cx="86.34" cy="60.00" r="1.34" fill="#6FC7B3"/><circle cx="86.34" cy="67.50" r="1.01" fill="#84D1BF"/><circle cx="86.34" cy="75.00" r="0.77" fill="#98D9C9"/><circle cx="77.72" cy="52.50" r="1.09" fill="#80CFBD"/><circle cx="77.72" cy="60.00" r="1.44" fill="#68C4AF"/><circle cx="77.72" cy="67.50" r="1.09" fill="#80CFBD"/><circle cx="63.75" cy="116.48" r="2.42" fill="#39A38C"/><circle cx="56.25" cy="116.48" r="2.11" fill="#C1E1D7"/><circle cx="71.25" cy="116.48" r="1.59" fill="#CAE5DD"/><circle cx="48.75" cy="116.48" r="1.83" fill="#51B7A1"/><circle cx="78.75" cy="116.48" r="1.39" fill="#6BC5B1"/><circle cx="41.25" cy="116.48" r="1.21" fill="#D3EAE2"/><circle cx="86.25" cy="116.48" r="0.91" fill="#DCEEE8"/><circle cx="33.75" cy="116.48" r="1.05" fill="#82D0BE"/><circle cx="93.75" cy="116.48" r="0.79" fill="#96D8C8"/><circle cx="26.25" cy="116.48" r="0.69" fill="#E5F3EE"/><circle cx="63.75" cy="107.87" r="2.26" fill="#BFE0D5"/><circle cx="56.25" cy="107.87" r="2.60" fill="#339E87"/><circle cx="71.25" cy="107.87" r="1.97" fill="#4AB49D"/><circle cx="48.75" cy="107.87" r="1.71" fill="#C8E4DB"/><circle cx="78.75" cy="107.87" r="1.29" fill="#D1E9E1"/><circle cx="41.25" cy="107.87" r="1.49" fill="#65C2AD"/><circle cx="86.25" cy="107.87" r="1.13" fill="#7DCEBC"/><circle cx="33.75" cy="107.87" r="0.98" fill="#DAEDE7"/><circle cx="93.75" cy="107.87" r="0.74" fill="#E2F2ED"/><circle cx="26.25" cy="107.87" r="0.85" fill="#91D6C6"/><circle cx="63.75" cy="99.26" r="2.78" fill="#2D9881"/><circle cx="56.25" cy="99.26" r="2.42" fill="#BDDED4"/><circle cx="71.25" cy="99.26" r="1.83" fill="#C6E3DA"/><circle cx="48.75" cy="99.26" r="2.11" fill="#44AF98"/><circle cx="78.75" cy="99.26" r="1.59" fill="#5EBEA9"/><circle cx="41.25" cy="99.26" r="1.39" fill="#CEE8E0"/><circle cx="86.25" cy="99.26" r="1.05" fill="#D7ECE5"/><circle cx="33.75" cy="99.26" r="1.21" fill="#78CCB9"/><circle cx="93.75" cy="99.26" r="0.91" fill="#8CD4C3"/><circle cx="26.25" cy="99.26" r="0.79" fill="#E0F0EB"/><circle cx="63.75" cy="90.64" r="2.60" fill="#BBDDD2"/><circle cx="56.25" cy="90.64" r="2.98" fill="#27937C"/><circle cx="71.25" cy="90.64" r="2.26" fill="#3EA992"/><circle cx="48.75" cy="90.64" r="1.97" fill="#C3E2D8"/><circle cx="78.75" cy="90.64" r="1.49" fill="#CCE6DE"/><circle cx="41.25" cy="90.64" r="1.71" fill="#58BBA5"/><circle cx="63.75" cy="82.03" r="3.20" fill="#218D76"/><circle cx="56.25" cy="82.03" r="2.78" fill="#B8DCD1"/><circle cx="71.25" cy="82.03" r="2.11" fill="#C1E1D7"/><circle cx="48.75" cy="82.03" r="2.42" fill="#39A38C"/><circle cx="90.00" cy="112.18" r="0.36" fill="#CEEEE6"/><circle cx="82.50" cy="112.18" r="0.47" fill="#BBE7DC"/><circle cx="75.00" cy="112.18" r="0.62" fill="#A8DFD1"/><circle cx="67.50" cy="112.18" r="0.82" fill="#94D7C7"/><circle cx="60.00" cy="112.18" r="1.09" fill="#80CFBD"/><circle cx="52.50" cy="112.18" r="0.82" fill="#94D7C7"/><circle cx="45.00" cy="112.18" r="0.62" fill="#A8DFD1"/><circle cx="37.50" cy="112.18" r="0.47" fill="#BBE7DC"/><circle cx="30.00" cy="112.18" r="0.36" fill="#CEEEE6"/><circle cx="90.00" cy="103.56" r="0.38" fill="#CAECE3"/><circle cx="82.50" cy="103.56" r="0.51" fill="#B6E5D9"/><circle cx="75.00" cy="103.56" r="0.67" fill="#A2DDCF"/><circle cx="67.50" cy="103.56" r="0.88" fill="#8ED5C4"/><circle cx="60.00" cy="103.56" r="1.17" fill="#7ACDBA"/><circle cx="52.50" cy="103.56" r="0.88" fill="#8ED5C4"/><circle cx="45.00" cy="103.56" r="0.67" fill="#A2DDCF"/><circle cx="37.50" cy="103.56" r="0.51" fill="#B6E5D9"/><circle cx="30.00" cy="103.56" r="0.38" fill="#CAECE3"/><circle cx="90.00" cy="94.95" r="0.41" fill="#C5EAE1"/><circle cx="82.50" cy="94.95" r="0.54" fill="#B2E3D6"/><circle cx="75.00" cy="94.95" r="0.72" fill="#9EDBCC"/><circle cx="67.50" cy="94.95" r="0.95" fill="#8AD3C2"/><circle cx="60.00" cy="94.95" r="1.25" fill="#75CBB8"/><circle cx="52.50" cy="94.95" r="0.95" fill="#8AD3C2"/><circle cx="45.00" cy="94.95" r="0.72" fill="#9EDBCC"/><circle cx="37.50" cy="94.95" r="0.54" fill="#B2E3D6"/><circle cx="30.00" cy="94.95" r="0.41" fill="#C5EAE1"/><circle cx="75.00" cy="86.34" r="0.77" fill="#98D9C9"/><circle cx="67.50" cy="86.34" r="1.01" fill="#84D1BF"/><circle cx="60.00" cy="86.34" r="1.34" fill="#6FC7B3"/><circle cx="52.50" cy="86.34" r="1.01" fill="#84D1BF"/><circle cx="45.00" cy="86.34" r="0.77" fill="#98D9C9"/><circle cx="67.50" cy="77.72" r="1.09" fill="#80CFBD"/><circle cx="60.00" cy="77.72" r="1.44" fill="#68C4AF"/><circle cx="52.50" cy="77.72" r="1.09" fill="#80CFBD"/><circle cx="3.52" cy="63.75" r="2.42" fill="#39A38C"/><circle cx="3.52" cy="56.25" r="2.11" fill="#C1E1D7"/><circle cx="3.52" cy="71.25" r="1.59" fill="#CAE5DD"/><circle cx="3.52" cy="48.75" r="1.83" fill="#51B7A1"/><circle cx="3.52" cy="78.75" r="1.39" fill="#6BC5B1"/><circle cx="3.52" cy="41.25" r="1.21" fill="#D3EAE2"/><circle cx="3.52" cy="86.25" r="0.91" fill="#DCEEE8"/><circle cx="3.52" cy="33.75" r="1.05" fill="#82D0BE"/><circle cx="3.52" cy="93.75" r="0.79" fill="#96D8C8"/><circle cx="3.52" cy="26.25" r="0.69" fill="#E5F3EE"/><circle cx="12.13" cy="63.75" r="2.26" fill="#BFE0D5"/><circle cx="12.13" cy="56.25" r="2.60" fill="#339E87"/><circle cx="12.13" cy="71.25" r="1.97" fill="#4AB49D"/><circle cx="12.13" cy="48.75" r="1.71" fill="#C8E4DB"/><circle cx="12.13" cy="78.75" r="1.29" fill="#D1E9E1"/><circle cx="12.13" cy="41.25" r="1.49" fill="#65C2AD"/><circle cx="12.13" cy="86.25" r="1.13" fill="#7DCEBC"/><circle cx="12.13" cy="33.75" r="0.98" fill="#DAEDE7"/><circle cx="12.13" cy="93.75" r="0.74" fill="#E2F2ED"/><circle cx="12.13" cy="26.25" r="0.85" fill="#91D6C6"/><circle cx="20.74" cy="63.75" r="2.78" fill="#2D9881"/><circle cx="20.74" cy="56.25" r="2.42" fill="#BDDED4"/><circle cx="20.74" cy="71.25" r="1.83" fill="#C6E3DA"/><circle cx="20.74" cy="48.75" r="2.11" fill="#44AF98"/><circle cx="20.74" cy="78.75" r="1.59" fill="#5EBEA9"/><circle cx="20.74" cy="41.25" r="1.39" fill="#CEE8E0"/><circle cx="20.74" cy="86.25" r="1.05" fill="#D7ECE5"/><circle cx="20.74" cy="33.75" r="1.21" fill="#78CCB9"/><circle cx="20.74" cy="93.75" r="0.91" fill="#8CD4C3"/><circle cx="20.74" cy="26.25" r="0.79" fill="#E0F0EB"/><circle cx="29.36" cy="63.75" r="2.60" fill="#BBDDD2"/><circle cx="29.36" cy="56.25" r="2.98" fill="#27937C"/><circle cx="29.36" cy="71.25" r="2.26" fill="#3EA992"/><circle cx="29.36" cy="48.75" r="1.97" fill="#C3E2D8"/><circle cx="29.36" cy="78.75" r="1.49" fill="#CCE6DE"/><circle cx="29.36" cy="41.25" r="1.71" fill="#58BBA5"/><circle cx="37.97" cy="63.75" r="3.20" fill="#218D76"/><circle cx="37.97" cy="56.25" r="2.78" fill="#B8DCD1"/><circle cx="37.97" cy="71.25" r="2.11" fill="#C1E1D7"/><circle cx="37.97" cy="48.75" r="2.42" fill="#39A38C"/><circle cx="7.82" cy="90.00" r="0.36" fill="#CEEEE6"/><circle cx="7.82" cy="82.50" r="0.47" fill="#BBE7DC"/><circle cx="7.82" cy="75.00" r="0.62" fill="#A8DFD1"/><circle cx="7.82" cy="67.50" r="0.82" fill="#94D7C7"/><circle cx="7.82" cy="60.00" r="1.09" fill="#80CFBD"/><circle cx="7.82" cy="52.50" r="0.82" fill="#94D7C7"/><circle cx="7.82" cy="45.00" r="0.62" fill="#A8DFD1"/><circle cx="7.82" cy="37.50" r="0.47" fill="#BBE7DC"/><circle cx="7.82" cy="30.00" r="0.36" fill="#CEEEE6"/><circle cx="16.44" cy="90.00" r="0.38" fill="#CAECE3"/><circle cx="16.44" cy="82.50" r="0.51" fill="#B6E5D9"/><circle cx="16.44" cy="75.00" r="0.67" fill="#A2DDCF"/><circle cx="16.44" cy="67.50" r="0.88" fill="#8ED5C4"/><circle cx="16.44" cy="60.00" r="1.17" fill="#7ACDBA"/><circle cx="16.44" cy="52.50" r="0.88" fill="#8ED5C4"/><circle cx="16.44" cy="45.00" r="0.67" fill="#A2DDCF"/><circle cx="16.44" cy="37.50" r="0.51" fill="#B6E5D9"/><circle cx="16.44" cy="30.00" r="0.38" fill="#CAECE3"/><circle cx="25.05" cy="90.00" r="0.41" fill="#C5EAE1"/><circle cx="25.05" cy="82.50" r="0.54" fill="#B2E3D6"/><circle cx="25.05" cy="75.00" r="0.72" fill="#9EDBCC"/><circle cx="25.05" cy="67.50" r="0.95" fill="#8AD3C2"/><circle cx="25.05" cy="60.00" r="1.25" fill="#75CBB8"/><circle cx="25.05" cy="52.50" r="0.95" fill="#8AD3C2"/><circle cx="25.05" cy="45.00" r="0.72" fill="#9EDBCC"/><circle cx="25.05" cy="37.50" r="0.54" fill="#B2E3D6"/><circle cx="25.05" cy="30.00" r="0.41" fill="#C5EAE1"/><circle cx="33.66" cy="75.00" r="0.77" fill="#98D9C9"/><circle cx="33.66" cy="67.50" r="1.01" fill="#84D1BF"/><circle cx="33.66" cy="60.00" r="1.34" fill="#6FC7B3"/><circle cx="33.66" cy="52.50" r="1.01" fill="#84D1BF"/><circle cx="33.66" cy="45.00" r="0.77" fill="#98D9C9"/><circle cx="42.28" cy="67.50" r="1.09" fill="#80CFBD"/><circle cx="42.28" cy="60.00" r="1.44" fill="#68C4AF"/><circle cx="42.28" cy="52.50" r="1.09" fill="#80CFBD"/></svg></div>
+  </div>
+  <div class="wrap">
+    <div class="facts">
+      <a class="fact" href="#agents"><span class="n">01</span><span><strong>Agents</strong><span class="t">AI managers with their own identity, memory and rules, one per brand.</span></span></a>
+      <a class="fact" href="#engine"><span class="n">02</span><span><strong>Engine</strong><span class="t">Standard, interoperable healthcare apps from JSON, not code.</span></span></a>
+      <a class="fact" href="#workflow"><span class="n">03</span><span><strong>Clinical workflow</strong><span class="t">Agents and engine implemented in the daily work of clinics and care networks.</span></span></a>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="agents">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="idx"><b>01</b>Agents</p>
+      <div>
+        <h2>Every brand has a manager. One window sits over all of them.</h2>
+        <p>A manager is an AI agent that lives in its brand's repository. It knows the brand's website, mailbox, calendar, leads and open questions, and it writes down what it learns. Above them, a manager of managers answers across all brands and opens the right one when there is work to do.</p>
+      </div>
+    </div>
+
+    <div class="tree rv">
+      <div class="root"><i></i>Manager</div>
+      <div class="stem"></div>
+      <div class="leaves">
+        <div class="leaf"><strong>A clinic</strong><span class="mono where">Care</span><ul><li>Operations</li><li>Website</li><li>Agenda and traffic</li></ul></div>
+        <div class="leaf"><strong>A specialist unit</strong><span class="mono where">Care</span><ul><li>Website</li><li>Clinical content</li><li>Patient enquiries</li></ul></div>
+        <div class="leaf"><strong>A care network</strong><span class="mono where">Care</span><ul><li>Lead pipeline</li><li>Replies, drafted</li><li>Content in several languages</li></ul></div>
+        <div class="leaf"><strong>A new brand</strong><span class="mono where">From zero</span><ul><li>Domain and mail</li><li>Website</li><li>Community</li></ul></div>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="term rv" aria-label="What we ask the manager">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <div><span class="p">›</span> status <span class="c"># what needs attention, across every brand</span></div>
+        <div><span class="p">›</span> what is pending everywhere?</div>
+        <div><span class="p">›</span> which sites changed this week?</div>
+        <div><span class="p">›</span> open clinic <span class="c"># its own window, its own login</span></div>
+        <div><span class="p">›</span> new lead: name, phone, country <span class="c"># a drafted reply</span></div>
+      </div>
+      <div class="rules rv">
+        <div class="rule"><span class="k">a</span><div><strong>One identity per agent.</strong><p>Each manager works under its brand's own account and is refused on any other. Nothing leaks between brands.</p></div></div>
+        <div class="rule"><span class="k">b</span><div><strong>Memory is written, not assumed.</strong><p>Every decision, correction and run goes into dated notes in the repository, so the next session starts where the last one ended.</p></div></div>
+        <div class="rule"><span class="k">c</span><div><strong>The agent drafts. A person sends.</strong><p>Replies to doctors and patients are prepared in full and wait for a human to press the button.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block dark" id="engine">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="idx"><b>02</b>Engine</p>
+      <div>
+        <h2>Clinical software from configuration, not code.</h2>
+        <p>Our engine is a no-code framework for standardised healthcare applications. The data model, the terminology and the behaviour are already in the system and shared by everyone who uses it. A new application is a description of how to use them, written in JSON.</p>
+      </div>
+    </div>
+
+    <div class="demo rv">
+      <div class="tabs" role="tablist" aria-label="Example applications">
+        <span class="mono lbl">One engine, three applications</span>
+        <button class="tab" role="tab" data-app="dryeye" aria-selected="true">Dry-eye intake</button>
+        <button class="tab" role="tab" data-app="cataract" aria-selected="false">Cataract pre-op</button>
+        <button class="tab" role="tab" data-app="followup" aria-selected="false">Follow-up visit</button>
+      </div>
+      <div class="panes">
+        <div class="pane"><p class="mono cap"><span>Configuration</span><span>JSON</span></p><pre id="json"></pre></div>
+        <div class="pane"><p class="mono cap"><span>Application</span><span>Live</span></p><div id="form"></div></div>
+      </div>
+    </div>
+    <p class="note">A simplified illustration of the idea, not the real schema.</p>
+
+    <div class="concepts rv">
+      <div class="concept"><strong>Forms</strong><p>Assembled from fields that already exist in the shared model.</p></div>
+      <div class="concept"><strong>Form contexts</strong><p>The same form behaves differently by specialty, event and role.</p></div>
+      <div class="concept"><strong>Workflows</strong><p>What happens to a record after it is saved, and who sees it next.</p></div>
+      <div class="concept"><strong>Presets</strong><p>Automation and defaults that fill in what the system can know.</p></div>
+      <div class="concept"><strong>Reference events</strong><p>Records anchored to the clinical moment they belong to.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="workflow">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="idx"><b>03</b>Clinical workflow</p>
+      <div>
+        <h2>Agents and engine, put to work inside the clinic.</h2>
+        <p>This is the service. We implement both in the daily work of clinics and care networks, alongside the physicians: what a patient asks before surgery, how an examination is recorded, what has to be true before a treatment plan is signed off.</p>
+      </div>
+    </div>
+    <div class="work rv">
+      <div class="row"><span class="n">01</span><h3>Operations agents</h3><p>An AI manager for each brand, handling its mailbox, leads, calendar and website, with a written memory of everything it learns.</p><span class="side">Agents</span></div>
+      <div class="row"><span class="n">02</span><h3>Healthcare applications</h3><p>Forms, workflows and records for clinical use, assembled from configuration on a shared, standard data model.</p><span class="side">Engine</span></div>
+      <div class="row"><span class="n">03</span><h3>Clinical content</h3><p>Patient information in several languages, grounded in published consensus and reviewed by physicians.</p><span class="side">Agents</span></div>
+      <div class="row"><span class="n">04</span><h3>Medical websites</h3><p>Patient-facing sites: design, content pipeline, search, infrastructure and compliance.</p><span class="side">Agents</span></div>
+      <div class="row"><span class="n">05</span><h3>Clinical product work</h3><p>Feature specifications, interface copy and the clinical analysis behind them, for software used in care.</p><span class="side">Engine</span></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="contact" id="contact">
+  <img class="ghostmark" src="assets/healthedra-mark.svg" alt="">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--green-mid)">Contact</p>
+    <h2>Have a clinic or a care network <em>to run better?</em></h2>
+    <a class="mail" href="mailto:arturo@healthedra.com">arturo@healthedra.com</a>
+    <div class="foot">
+      <span>© 2026 Healthedra</span>
+      <span>Agents, engine and clinical workflow</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// nav border on scroll
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 8), { passive: true });
+
+// the mark: each dot appears and breathes in a wave from the centre
+document.querySelectorAll('#mark circle').forEach(c => {
+  const d = Math.hypot(c.cx.baseVal.value - 60, c.cy.baseVal.value - 60);
+  c.style.setProperty('--d', d.toFixed(1));
+});
+
+// reveal on scroll
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+// engine demo: one shared field library, three configurations
+const LIB = {
+  'patient.name':      { label: 'Patient name', type: 'text', ph: 'Full name' },
+  'patient.birthdate': { label: 'Date of birth', type: 'date' },
+  'eye.laterality':    { label: 'Eye', type: 'select', opts: ['Right (OD)', 'Left (OS)', 'Both (OU)'] },
+  'symptom.score':     { label: 'Symptom score', type: 'range' },
+  'exam.tbut':         { label: 'Tear break-up time', type: 'number', ph: '0' },
+  'exam.acuity':       { label: 'Visual acuity', type: 'text', ph: '20/40' },
+  'surgery.lens':      { label: 'Intraocular lens', type: 'select', opts: ['Monofocal', 'Toric', 'Extended depth of focus', 'Multifocal'] },
+  'consent.data':      { label: 'I agree to the processing of my data', type: 'check' }
+};
+const APPS = {
+  dryeye: { form: 'dry-eye-intake', title: 'Dry-eye intake', context: { specialty: 'ophthalmology', event: 'first-visit' },
+    fields: [{ use: 'patient.name' }, { use: 'patient.birthdate' }, { use: 'symptom.score', preset: 'OSDI-6' }, { use: 'exam.tbut', unit: 's' }],
+    workflow: ['survey', 'exam', 'treatment-plan'] },
+  cataract: { form: 'cataract-pre-op', title: 'Cataract pre-op', context: { specialty: 'ophthalmology', event: 'surgery' },
+    fields: [{ use: 'patient.name' }, { use: 'eye.laterality' }, { use: 'exam.acuity' }, { use: 'surgery.lens' }, { use: 'consent.data' }],
+    workflow: ['assessment', 'consent', 'theatre-list'] },
+  followup: { form: 'follow-up-visit', title: 'Follow-up visit', context: { specialty: 'ophthalmology', event: 'follow-up' },
+    fields: [{ use: 'patient.name' }, { use: 'eye.laterality' }, { use: 'exam.acuity' }, { use: 'symptom.score' }],
+    workflow: ['visit', 'review', 'next-appointment'] }
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function paint(cfg) {
+  const { title, ...shown } = cfg;
+  let s = JSON.stringify(shown, null, 2)
+    .replace(/\{\n\s+("use"[^}]*?)\n\s+\}/g, (m, body) => '{ ' + body.replace(/\n\s+/g, ' ') + ' }')
+    .replace(/\[\n\s+("[^\]]*?)\n\s+\]/g, (m, body) => '[' + body.replace(/\n\s+/g, ' ') + ']');
+  return esc(s)
+    .replace(/(&quot;[\w.-]+&quot;)(\s*:)/g, '<span class="k">$1</span><span class="x">$2</span>')
+    .replace(/(: |\[|, )(&quot;.*?&quot;)/g, '$1<span class="s">$2</span>');
+}
+function field(f, i) {
+  const d = LIB[f.use], id = 'f' + i, extra = f.preset ? ' (' + f.preset + ')' : f.unit ? ' (' + f.unit + ')' : '';
+  const lab = `<label for="${id}">${esc(d.label + extra)}</label>`;
+  if (d.type === 'check') return `<div class="fld chk"><input id="${id}" type="checkbox">${lab}</div>`;
+  if (d.type === 'select') return `<div class="fld">${lab}<select id="${id}">${d.opts.map(o => `<option>${esc(o)}</option>`).join('')}</select></div>`;
+  if (d.type === 'range') return `<div class="fld">${lab}<input id="${id}" type="range" min="0" max="24" value="9"></div>`;
+  return `<div class="fld">${lab}<input id="${id}" type="${d.type}" placeholder="${esc(d.ph || '')}"></div>`;
+}
+function show(key) {
+  const cfg = APPS[key];
+  document.getElementById('json').innerHTML = paint(cfg);
+  document.getElementById('form').innerHTML = `<div class="form"><h3>${esc(cfg.title)}</h3>${cfg.fields.map(field).join('')}<div class="flow">${cfg.workflow.map(w => `<b>${esc(w)}</b>`).join('<span>→</span>')}</div></div>`;
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.app === key));
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => show(t.dataset.app)));
+show('dryeye');
+</script>
+</body>
+</html>
