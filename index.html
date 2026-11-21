@@ -101,8 +101,8 @@ h2 { font-weight: 500; font-size: clamp(32px, 4.6vw, 60px); line-height: 1.04; l
 .root { width: fit-content; margin: 0 auto; background: var(--ink); color: var(--white); border-radius: 999px; padding: 12px 22px; display: flex; align-items: center; gap: 12px; font-weight: 500 }
 .root i { width: 8px; height: 8px; border-radius: 50%; background: var(--green-mid); box-shadow: 0 0 0 5px rgba(118,203,184,.22) }
 .stem { width: 1px; height: 36px; margin: 0 auto; background-image: linear-gradient(var(--green) 40%, transparent 0); background-size: 1px 6px }
-.leaves { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; position: relative; padding-top: 28px }
-.leaves::before { content: ""; position: absolute; top: 0; left: 12.5%; right: 12.5%; height: 1px; background-image: linear-gradient(90deg, var(--green) 40%, transparent 0); background-size: 6px 1px }
+.leaves { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; position: relative; padding-top: 28px }
+.leaves::before { content: ""; position: absolute; top: 0; left: 16.667%; right: 16.667%; height: 1px; background-image: linear-gradient(90deg, var(--green) 40%, transparent 0); background-size: 6px 1px }
 .leaf { position: relative; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 18px; transition: border-color .25s, transform .25s }
 .leaf::before { content: ""; position: absolute; top: -28px; left: 50%; width: 1px; height: 28px; background-image: linear-gradient(var(--green) 40%, transparent 0); background-size: 1px 6px }
 .leaf:hover { border-color: var(--green); transform: translateY(-3px) }
@@ -257,7 +257,6 @@ pre .k { color: var(--green-mid) } pre .s { color: #E9D8A6 } pre .x { color: var
         <div class="leaf"><strong>A clinic</strong><span class="mono where">Care</span><ul><li>Operations</li><li>Website</li><li>Agenda and traffic</li></ul></div>
         <div class="leaf"><strong>A specialist unit</strong><span class="mono where">Care</span><ul><li>Website</li><li>Clinical content</li><li>Patient enquiries</li></ul></div>
         <div class="leaf"><strong>A care network</strong><span class="mono where">Care</span><ul><li>Lead pipeline</li><li>Replies, drafted</li><li>Content in several languages</li></ul></div>
-        <div class="leaf"><strong>A new brand</strong><span class="mono where">From zero</span><ul><li>Domain and mail</li><li>Website</li><li>Community</li></ul></div>
       </div>
     </div>
 
